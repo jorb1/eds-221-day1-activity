@@ -1,0 +1,59 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+---
+title: Blood Lead 
+author: BJ
+  ---
+  
+Load libraries
+
+```{r}
+library(tidyverse)
+library(janitor)
+```
+
+Read it
+
+```{r}
+stl_lead <- read_csv(here::here("data", "stl_blood_lead.csv"))
+```
+
+Convert variable names to snake case
+
+```{r}
+stl_lead <- stl_lead |> clean_names()
+```
+
+Do some data visualization
+
+```{r}
+skimr::skim(stl_lead)
+dim(stl_lead)
+names(stl_lead)
+```
+
+Make a new data frame from the original CSV but with an added column
+
+```{r}
+stl_lead_prop <- stl_lead |> dplyr::mutate(prop_white = (white / total_pop) * 100)
+```
+
+Create a scatterplot
+
+```{r}
+stl_lead_plot <- ggplot(data = stl_lead_prop, aes(x = pct_elevated, y = white)) +
+  geom_point(aes(color = pct_elevated), show.legend = FALSE) +
+  theme_minimal() +
+  labs(title = "Blood Lead",
+       x = "PCT Elevated", 
+       y = "White")
+
+stl_lead_plot
+
+```
+
+
+  
